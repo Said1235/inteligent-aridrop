@@ -1,0 +1,12 @@
+[build]
+  command = "npm install && npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Note: this file lives in frontend/ because the Next.js app is a
+# subdirectory of the repo, not the repo root. When connecting this repo to
+# Netlify, also set "Base directory" to "frontend" in the site's build
+# settings (or deploy from a copy of frontend/ as its own repo) — Netlify
+# does not infer a non-root Next.js app on its own.

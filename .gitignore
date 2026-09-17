@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+.env
+frontend/.env
+.env.local
+frontend/.env.local
+*.log
+.DS_Store
+frontend/fee-profile.json

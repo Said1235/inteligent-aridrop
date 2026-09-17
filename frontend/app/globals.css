@@ -1,0 +1,133 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+:root {
+  --bg: #f8f5ef;
+  --ink: #211d16;
+  --surface: #ffffff;
+  --border: #e6e0d2;
+  --accent: #b8752e;
+  --qualifies: #3e6b4f;
+  --notqualify: #9c5a45;
+  --pending: #8c8677;
+  --radius: 6px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Source Sans 3", system-ui, sans-serif;
+  line-height: 1.55;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+}
+
+.mono {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff7ee;
+  border-radius: var(--radius);
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  transition: opacity 150ms ease;
+}
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.btn-primary:not(:disabled):hover {
+  opacity: 0.88;
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.btn-secondary:hover {
+  background: var(--bg);
+}
+
+textarea,
+input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px;
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+}
+textarea {
+  min-height: 160px;
+  resize: vertical;
+}
+textarea:focus,
+input:focus,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.pulse-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot {
+    animation: none;
+    opacity: 0.7;
+  }
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
