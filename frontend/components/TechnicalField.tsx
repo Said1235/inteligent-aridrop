@@ -18,23 +18,9 @@ export function TechnicalField({ label, value }: { label: string; value: string 
   };
 
   return (
-    <span
-      className="mono"
-      style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, color: "var(--pending)" }}
-    >
+    <span className="tech-field">
       {truncate(value)}
-      <button
-        onClick={copy}
-        className="mono"
-        style={{
-          background: "none",
-          border: "1px solid var(--border)",
-          borderRadius: 3,
-          fontSize: 10,
-          padding: "2px 6px",
-          color: "var(--pending)",
-        }}
-      >
+      <button onClick={copy} className="copy-btn mono">
         copy
       </button>
     </span>

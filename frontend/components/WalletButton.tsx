@@ -14,7 +14,6 @@ export function WalletButton() {
     address,
     isConnected,
     isLoading,
-    isMetaMaskInstalled,
     isOnCorrectNetwork,
     connectWallet,
     disconnectWallet,
@@ -24,47 +23,37 @@ export function WalletButton() {
     try {
       await connectWallet();
     } catch (err: any) {
-      if (!String(err?.message || "").includes("rejected")) {
-        toastError("Could not connect wallet", { description: err?.message });
-      } else {
+      if (String(err?.message || "").toLowerCase().includes("rejected")) {
         userRejected("Connection cancelled");
+      } else {
+        toastError("Could not connect wallet", { description: err?.message });
       }
     }
   };
 
   let walletLabel = "Not connected";
-  let dotColor = "var(--pending)";
+  let dotClass = "off";
 
   if (isLoading) {
     walletLabel = "Connecting…";
-    dotColor = "var(--accent)";
+    dotClass = "warn";
   } else if (isConnected && !isOnCorrectNetwork) {
     walletLabel = "Wrong network";
-    dotColor = "var(--notqualify)";
+    dotClass = "warn";
   } else if (isConnected && address) {
     walletLabel = formatAddress(address, 12);
-    dotColor = "var(--qualifies)";
+    dotClass = "on";
   }
 
   return (
-    <div className="flex items-center gap-2 text-xs">
-      <span
-        className="surface"
-        style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 9px" }}
-      >
-        <span
-          style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--qualifies)" }}
-        />
+    <div className="nav-status">
+      <span className="badge">
+        <span className="dot on" />
         {GENLAYER_NETWORK.chainName}
       </span>
 
-      <button
-        className="surface"
-        onClick={isConnected ? disconnectWallet : handleConnect}
-        style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 9px", fontSize: 12 }}
-        title={!isMetaMaskInstalled ? "MetaMask not detected — click to open install page" : undefined}
-      >
-        <span style={{ width: 6, height: 6, borderRadius: "50%", background: dotColor }} />
+      <button className="badge" onClick={isConnected ? disconnectWallet : handleConnect}>
+        <span className={`dot ${dotClass}`} />
         <span className="mono">{walletLabel}</span>
       </button>
     </div>

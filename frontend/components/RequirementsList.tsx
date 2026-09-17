@@ -12,28 +12,22 @@ export function RequirementsList() {
   const { data: requirements, isLoading, isError } = useRequirements();
 
   return (
-    <div className="surface" style={{ padding: "18px 20px" }}>
-      <div style={{ fontSize: 11, color: "var(--pending)", marginBottom: 10 }}>
-        What validators check (from the contract's get_requirements())
-      </div>
+    <div className="rules">
+      <div className="rules-label">What validators check (from the contract&apos;s get_requirements())</div>
 
-      {isLoading && (
-        <div style={{ fontSize: 13, color: "var(--pending)" }}>Loading requirements…</div>
-      )}
+      {isLoading && <div className="body-copy">Loading requirements…</div>}
 
       {isError && (
-        <div style={{ fontSize: 13, color: "var(--notqualify)" }}>
-          Could not load requirements from the contract. Check the network banner above.
+        <div className="body-copy" style={{ color: "var(--notqualify)" }}>
+          Could not load requirements from the contract. Check the network badge above.
         </div>
       )}
 
       {!isLoading && !isError && (
-        <ol style={{ display: "flex", flexDirection: "column", gap: 10, listStyle: "none", margin: 0, padding: 0 }}>
+        <ol>
           {(requirements ?? []).map((req, i) => (
-            <li key={i} style={{ display: "flex", gap: 10, fontSize: 14, alignItems: "baseline" }}>
-              <span className="mono" style={{ fontSize: 12, color: "var(--accent)", flex: "none", width: 18 }}>
-                {i + 1}
-              </span>
+            <li key={i}>
+              <span className="n mono">{i + 1}</span>
               <span>{req}</span>
             </li>
           ))}

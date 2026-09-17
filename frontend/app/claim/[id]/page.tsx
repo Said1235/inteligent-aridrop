@@ -3,7 +3,6 @@
 import { use, useMemo } from "react";
 import Link from "next/link";
 import { GenLayerTransactionPanel, type SubmitInput, type TrackedStatus } from "@genlayer/transaction-kit-react";
-import { WalletButton } from "@/components/WalletButton";
 import { RequirementsList } from "@/components/RequirementsList";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TechnicalField } from "@/components/TechnicalField";
@@ -33,29 +32,22 @@ export default function ClaimDetailPage({ params }: { params: Promise<{ id: stri
     [contractAddress, claimId, validId],
   );
 
-  const handleEvaluateDone = (status: TrackedStatus) => {
+  const handleEvaluateDone = (_status: TrackedStatus) => {
     invalidateClaim();
   };
 
   return (
-    <main style={{ maxWidth: 680, margin: "0 auto", padding: "24px 20px 90px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
-        <Link href="/" className="mono" style={{ fontSize: 12, color: "var(--pending)" }}>
-          ← New claim
-        </Link>
-        <WalletButton />
-      </div>
+    <main>
+      <Link href="/" className="mono body-copy" style={{ display: "inline-block", marginBottom: 24 }}>
+        ← New claim
+      </Link>
 
-      {!validId && (
-        <NotFound reason="This isn't a valid claim ID." />
-      )}
+      {!validId && <NotFound reason="This isn't a valid claim ID." />}
 
-      {validId && isLoading && (
-        <p style={{ fontSize: 14, color: "var(--pending)" }}>Loading claim…</p>
-      )}
+      {validId && isLoading && <p className="body-copy">Loading claim…</p>}
 
       {validId && !isLoading && isError && (
-        <p style={{ fontSize: 14, color: "var(--notqualify)" }}>
+        <p className="body-copy" style={{ color: "var(--notqualify)" }}>
           Could not reach the contract. Check the network and try again.
         </p>
       )}
@@ -65,10 +57,10 @@ export default function ClaimDetailPage({ params }: { params: Promise<{ id: stri
       )}
 
       {validId && !isLoading && !isError && claim && (
-        <>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
+        <div className="view">
+          <div className="record-head">
             <StatusBadge status={claim.status} />
-            <span className="mono" style={{ fontSize: 12, color: "var(--pending)", display: "flex", alignItems: "center", gap: 8 }}>
+            <span className="body-copy" style={{ margin: 0 }}>
               Claim #<TechnicalField label="Claim ID" value={claimId} />
             </span>
           </div>
@@ -77,16 +69,16 @@ export default function ClaimDetailPage({ params }: { params: Promise<{ id: stri
             <RequirementsList />
           </div>
 
-          <div className="surface" style={{ padding: 18, marginBottom: 22 }}>
-            <div style={{ fontSize: 11, color: "var(--pending)", marginBottom: 10 }}>Evidence submitted</div>
-            <div style={{ fontSize: 14, whiteSpace: "pre-wrap" }}>{claim.evidenceText}</div>
+          <div className="evidence">
+            <div className="evidence-label">Evidence submitted</div>
+            {claim.evidenceText}
           </div>
 
           {claim.status === "pending" && (
             <div style={{ marginBottom: 8 }}>
               {kit && contractAddress ? (
                 <>
-                  <p style={{ fontSize: 13, color: "var(--pending)", marginBottom: 10 }}>
+                  <p className="body-copy" style={{ marginBottom: 10 }}>
                     Anyone can request evaluation — not only the claimant.
                   </p>
                   <GenLayerTransactionPanel
@@ -99,7 +91,7 @@ export default function ClaimDetailPage({ params }: { params: Promise<{ id: stri
                   />
                 </>
               ) : (
-                <p style={{ fontSize: 13, color: "var(--notqualify)" }}>
+                <p className="body-copy" style={{ color: "var(--notqualify)" }}>
                   Connect a wallet to request evaluation.
                 </p>
               )}
@@ -107,31 +99,31 @@ export default function ClaimDetailPage({ params }: { params: Promise<{ id: stri
           )}
 
           {claim.status === "does_not_qualify" && (
-            <p style={{ fontSize: 14, color: "var(--pending)" }}>
+            <p className="body-copy result-reveal">
               This claim&apos;s evidence did not qualify. The contract doesn&apos;t record a
               specific reason beyond this verdict.
             </p>
           )}
 
           {claim.status === "qualifies" && (
-            <p style={{ fontSize: 14, color: "var(--qualifies)" }}>
+            <p className="body-copy result-reveal" style={{ color: "var(--qualifies)" }}>
               This claim qualified. What happens next (payout, access, anything else)
               is handled outside this contract.
             </p>
           )}
 
-          <details style={{ marginTop: 28, borderTop: "1px solid var(--border)", paddingTop: 16 }}>
-            <summary style={{ cursor: "pointer", fontSize: 13, color: "var(--pending)" }}>Technical details</summary>
-            <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--border)", fontSize: 13, marginTop: 10 }}>
-              <span style={{ color: "var(--pending)" }}>Claimant</span>
+          <details className="tech-details">
+            <summary>Technical details</summary>
+            <div className="tech-row">
+              <span className="label">Claimant</span>
               <TechnicalField label="Claimant address" value={claim.claimant} />
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", fontSize: 13 }}>
-              <span style={{ color: "var(--pending)" }}>Claim ID (full)</span>
+            <div className="tech-row">
+              <span className="label">Claim ID (full)</span>
               <TechnicalField label="Claim ID" value={claimId} />
             </div>
           </details>
-        </>
+        </div>
       )}
     </main>
   );
@@ -139,10 +131,10 @@ export default function ClaimDetailPage({ params }: { params: Promise<{ id: stri
 
 function NotFound({ reason }: { reason: string }) {
   return (
-    <div className="surface" style={{ padding: "40px 24px", textAlign: "center" }}>
-      <h1 style={{ fontSize: 20, marginBottom: 8 }}>No claim found</h1>
-      <p style={{ fontSize: 14, color: "var(--pending)", marginBottom: 20 }}>{reason}</p>
-      <Link href="/" className="btn-primary" style={{ display: "inline-block", textDecoration: "none" }}>
+    <div className="empty-state">
+      <h1 className="h1" style={{ marginBottom: 8 }}>No claim found</h1>
+      <p className="body-copy" style={{ marginBottom: 0 }}>{reason}</p>
+      <Link href="/" className="btn btn-primary" style={{ textDecoration: "none" }}>
         Submit a new claim
       </Link>
     </div>

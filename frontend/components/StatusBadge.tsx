@@ -6,10 +6,10 @@ const LABELS: Record<ClaimStatus, string> = {
   does_not_qualify: "Not approved",
 };
 
-const COLORS: Record<ClaimStatus, string> = {
-  pending: "var(--pending)",
-  qualifies: "var(--qualifies)",
-  does_not_qualify: "var(--notqualify)",
+const CLASS: Record<ClaimStatus, string> = {
+  pending: "pending",
+  qualifies: "qualifies",
+  does_not_qualify: "notqualify",
 };
 
 function Icon({ status }: { status: ClaimStatus }) {
@@ -36,26 +36,12 @@ function Icon({ status }: { status: ClaimStatus }) {
 }
 
 /**
- * Status is communicated by text + icon shape, never color alone
- * (accessibility requirement). Only these 3 states exist — the contract
- * defines no others.
+ * Status is communicated by text + icon shape, never color alone. Only
+ * these 3 states exist — the contract defines no others.
  */
 export function StatusBadge({ status }: { status: ClaimStatus }) {
   return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 8,
-        padding: "8px 14px",
-        borderRadius: "var(--radius)",
-        border: `1px solid ${COLORS[status]}`,
-        color: COLORS[status],
-        background: "#fff",
-        fontSize: 13,
-        fontWeight: 600,
-      }}
-    >
+    <span className={`status-badge ${CLASS[status]}`}>
       <Icon status={status} />
       {LABELS[status]}
     </span>

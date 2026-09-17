@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GenLayerTransactionPanel, type SubmitInput, type TrackedStatus } from "@genlayer/transaction-kit-react";
-import { WalletButton } from "@/components/WalletButton";
 import { RequirementsList } from "@/components/RequirementsList";
 import { useTransactionKit } from "@/lib/genlayer/kit";
 import { useWallet } from "@/lib/genlayer/wallet";
@@ -18,7 +17,7 @@ export default function Home() {
   const contractAddress = getContractAddress();
 
   const [evidence, setEvidence] = useState("");
-  const [step, setStep] = useState<"form" | "review">("form");
+  const [step, setStep] = useState<"submit" | "review">("submit");
   // Generated ONCE, client-side, before any signature — never from a tx
   // return value, never inferred from "the caller's last claim".
   const [claimId] = useState<string>(() => generateClaimId());
@@ -34,7 +33,6 @@ export default function Home() {
   );
 
   const trimmed = evidence.trim();
-  const canReview = trimmed.length > 0;
 
   const handleDone = (status: TrackedStatus) => {
     if (status.successful !== false) {
@@ -47,58 +45,73 @@ export default function Home() {
   };
 
   return (
-    <main style={{ maxWidth: 680, margin: "0 auto", padding: "24px 20px 90px" }}>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 28 }}>
-        <WalletButton />
+    <main>
+      {/* ===== Landing ===== */}
+      <div className="landing-hero">
+        <h1>Prove the work. Let consensus decide.</h1>
+        <p>
+          This isn&apos;t a token faucet — it&apos;s an eligibility oracle. You did
+          something real; describe it with evidence, and a consensus of independent
+          AI validators decides whether it genuinely satisfies the campaign&apos;s public
+          requirements. Not one company. Not a private backend.
+        </p>
       </div>
 
-      {/* ---- Landing / how it works ---- */}
-      <section style={{ marginBottom: 40, paddingBottom: 32, borderBottom: "1px solid var(--border)" }}>
-        <h1 style={{ fontSize: 30, lineHeight: 1.15, maxWidth: "18ch" }}>
-          Submit evidence. Let independent validators judge it.
-        </h1>
-        <p style={{ fontSize: 15, marginTop: 16, maxWidth: "58ch", color: "#4a4437" }}>
-          This is an eligibility oracle, not a payout system. You describe a piece of
-          work with concrete evidence, and a consensus of independent AI validators —
-          not one company, not a single backend — judges whether it genuinely satisfies
-          the campaign&apos;s public requirements. The verdict is{" "}
-          <strong>qualifies</strong> or <strong>does not qualify</strong>. What happens
-          with that verdict (a payout, access, anything else) is the job of a separate
-          system — this contract only settles the judgment itself.
+      <div className="landing-section">
+        <h2>The problem with self-graded claims</h2>
+        <p className="body-copy">
+          A single backend judging its own campaign has no accountability — it could
+          quietly favor or reject claims and nobody could check. Vague, low-effort
+          evidence dressed up to look like real work is hard to catch when one party
+          both sets the bar and grades against it.
         </p>
-        <p style={{ fontSize: 14, marginTop: 14, maxWidth: "58ch", color: "var(--pending)" }}>
-          Why does that matter? A single backend judging its own campaign has no
-          accountability — it could quietly favor or reject claims with nobody able to
-          check. Here, the requirements are public, the evidence is public, and the
-          verdict comes from a decentralized validator consensus checking the same
-          criteria everyone else can see.
-        </p>
-      </section>
+      </div>
 
-      {/* ---- Submit ---- */}
-      <section>
-        <h2 style={{ fontSize: 20, marginBottom: 4 }}>Submit your evidence</h2>
-        <p style={{ fontSize: 13, color: "var(--pending)", marginBottom: 18 }}>
-          This is a two-step process: submitting your evidence, then a separate,
-          explicit step to request evaluation once you&apos;re on the claim page.
+      <div className="landing-section">
+        <h2>How it works</h2>
+        <div className="steps">
+          <div className="step"><span className="n mono">1</span><span className="t">Read the requirements below — the real, on-chain rubric, not a summary.</span></div>
+          <div className="step"><span className="n mono">2</span><span className="t">Submit your evidence — concrete, specific, checkable.</span></div>
+          <div className="step"><span className="n mono">3</span><span className="t">On your claim&apos;s own page, request an evaluation — anyone can, not just you.</span></div>
+          <div className="step"><span className="n mono">4</span><span className="t">A validator consensus judges it: qualifies, or does not qualify.</span></div>
+        </div>
+      </div>
+
+      <div className="landing-section">
+        <h2>Why decentralized judgment</h2>
+        <p className="body-copy">
+          The requirements are public (<span className="mono">get_requirements()</span>),
+          the evidence is public, and the verdict comes from a validator consensus
+          checking the same criteria anyone else can read — not a rule nobody can audit.
+          What happens with a qualifying verdict (a payout, access, anything else) is
+          the job of a separate system; this contract only settles the judgment itself.
+        </p>
+      </div>
+
+      {/* ===== Submit ===== */}
+      <div className="landing-section" style={{ borderBottom: "none" }}>
+        <h2>Submit your evidence</h2>
+        <p className="body-copy" style={{ marginBottom: 18 }}>
+          This is a two-step process: submitting your evidence now, then a separate,
+          explicit signature to request evaluation once you&apos;re on the claim page.
         </p>
 
         <div style={{ marginBottom: 20 }}>
           <RequirementsList />
         </div>
 
-        {step === "form" && (
+        {step === "submit" && (
           <>
             <textarea
               value={evidence}
               onChange={(e) => setEvidence(e.target.value)}
               placeholder="Describe the specific work you completed, with concrete, checkable details (links, steps, outputs)…"
             />
-            <div style={{ fontSize: 12, color: "var(--notqualify)", marginTop: 8, minHeight: 16 }}>
+            <div className="validation">
               {trimmed.length === 0 ? "Write your evidence before submitting." : ""}
             </div>
-            <div style={{ marginTop: 20 }}>
-              <button className="btn-primary" disabled={!canReview} onClick={() => setStep("review")}>
+            <div className="actions">
+              <button className="btn btn-primary" disabled={trimmed.length === 0} onClick={() => setStep("review")}>
                 Review before signing →
               </button>
             </div>
@@ -106,29 +119,27 @@ export default function Home() {
         )}
 
         {step === "review" && (
-          <div style={{ marginTop: 4 }}>
-            <button className="btn-secondary" onClick={() => setStep("form")} style={{ marginBottom: 16 }}>
-              ← Edit text
-            </button>
+          <div className="view">
+            <div className="review-text">{evidence}</div>
 
-            <div className="surface" style={{ padding: 16, marginBottom: 16, whiteSpace: "pre-wrap", fontSize: 14 }}>
-              {evidence}
-            </div>
-
-            <div
-              className="surface"
-              style={{ padding: "14px 16px", marginBottom: 18, fontSize: 13, borderLeft: "3px solid var(--accent)" }}
-            >
-              This claim will live at its own page (<span className="mono">/claim/{claimId}</span>) from the
-              moment it&apos;s submitted. Requesting evaluation afterward is a separate signature you do on that page,
-              whenever you&apos;re ready — it isn&apos;t part of this transaction.
+            <div className="notice">
+              This claim will live at its own page (<span className="mono">/claim/{claimId}</span>) from
+              the moment it&apos;s submitted. Requesting evaluation afterward is a separate
+              signature you do on that page, whenever you&apos;re ready — it isn&apos;t part of
+              this transaction.
             </div>
 
             {!isConnected && (
-              <p style={{ fontSize: 13, color: "var(--notqualify)", marginBottom: 12 }}>
+              <p className="body-copy" style={{ color: "var(--notqualify)" }}>
                 Connect your wallet above to sign and submit.
               </p>
             )}
+
+            <div className="actions" style={{ marginTop: 0, marginBottom: 18 }}>
+              <button className="btn btn-secondary" onClick={() => setStep("submit")}>
+                ← Edit text
+              </button>
+            </div>
 
             {kit && contractAddress ? (
               <GenLayerTransactionPanel
@@ -140,7 +151,7 @@ export default function Home() {
                 onDone={handleDone}
               />
             ) : (
-              <p style={{ fontSize: 13, color: "var(--notqualify)" }}>
+              <p className="body-copy" style={{ color: "var(--notqualify)" }}>
                 {!contractAddress
                   ? "Contract address not configured — set NEXT_PUBLIC_CONTRACT_ADDRESS in frontend/.env."
                   : "Connect your wallet to continue."}
@@ -148,7 +159,7 @@ export default function Home() {
             )}
           </div>
         )}
-      </section>
+      </div>
     </main>
   );
 }
