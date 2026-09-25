@@ -1,0 +1,14 @@
+# contract/
+__pycache__/
+*.pyc
+.pytest_cache/
+artifacts/
+.env
+
+# frontend/
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+.env
+.env.local
